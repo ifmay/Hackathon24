@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/zag-watch/static/css/main.1a16ab87.css",
+    "main.js": "/zag-watch/static/js/main.378dcab4.js",
+    "static/js/453.a3097abc.chunk.js": "/zag-watch/static/js/453.a3097abc.chunk.js",
+    "index.html": "/zag-watch/index.html",
+    "main.1a16ab87.css.map": "/zag-watch/static/css/main.1a16ab87.css.map",
+    "main.378dcab4.js.map": "/zag-watch/static/js/main.378dcab4.js.map",
+    "453.a3097abc.chunk.js.map": "/zag-watch/static/js/453.a3097abc.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1a16ab87.css",
+    "static/js/main.378dcab4.js"
+  ]
+}

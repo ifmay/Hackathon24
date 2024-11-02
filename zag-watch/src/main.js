@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 
 function MainPage() {
   const [activeTab, setActiveTab] = useState("Map");
+  const [formVisible, setFormVisible] = useState(false); // Track form visibility
+  const [formPosition, setFormPosition] = useState({ lat: null, lng: null }); // Position of the form
+  const [markerData, setMarkerData] = useState({ title: "", description: "" }); // Form data
   const mapRef = useRef(null); // Reference to the map DOM element
   const mapInstance = useRef(null); // Store the map instance
   const [markers, setMarkers] = useState([]); // Store an array of markers
@@ -40,6 +43,16 @@ function MainPage() {
         map: mapInstance.current,
       });
 
+      // Show form and set its position
+      setFormVisible(true);
+      setFormPosition({ lat: location.lat(), lng: location.lng() });
+
+      // Add click listener to marker to re-open form if needed
+      newMarker.addListener("click", () => {
+        setFormVisible(true);
+        setFormPosition({ lat: location.lat(), lng: location.lng() });
+      });
+
       // Update the markers state to include the new marker
       setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
     };
@@ -59,6 +72,21 @@ function MainPage() {
     };
   }, [activeTab]); // Add activeTab as a dependency
 
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    // Handle form data submission here (e.g., save marker data)
+    console.log("Marker Data:", markerData);
+
+    // Reset form data and hide form after submission
+    setMarkerData({ title: "", description: "" });
+    setFormVisible(false);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setMarkerData((prevData) => ({ ...prevData, [name]: value }));
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -76,8 +104,51 @@ function MainPage() {
         </div>
 
         {activeTab === "Map" && (
-          <div style={{ height: "75vh", width: "100vw" }}>
+          <div style={{ height: "75vh", width: "100vw", position: "relative" }}>
             <div ref={mapRef} style={{ height: "100%" }}></div>
+
+            {/* Render form at specified position */}
+            {formVisible && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: `${formPosition.lat}px`,
+                  left: `${formPosition.lng}px`,
+                  backgroundColor: "white",
+                  padding: "10px",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                  zIndex: 1000,
+                }}
+              >
+                <form onSubmit={handleFormSubmit}>
+                  <label>
+                    Title:
+                    <input
+                      type="text"
+                      name="title"
+                      value={markerData.title}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </label>
+                  <br />
+                  <label>
+                    Description:
+                    <textarea
+                      name="description"
+                      value={markerData.description}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </label>
+                  <br />
+                  <button type="submit">Save</button>
+                  <button type="button" onClick={() => setFormVisible(false)}>
+                    Cancel
+                  </button>
+                </form>
+              </div>
+            )}
           </div>
         )}
         {activeTab === "Recent Feed" && <h2>Recent Feed Content</h2>}

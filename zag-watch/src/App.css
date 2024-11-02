@@ -14,30 +14,46 @@
 }
 
 .App-header {
-  background-color: #4b8bbe; /* Change to a sky blue */
+  background-color: navy; /* Change to a sky blue */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: #f1f1f1; /* Light color for better contrast */
+  color: rgb(4, 15, 50); /* Light color for better contrast */
 }
 
 .App-header h2 {
-  color: #ffcc00; /* Keeping the same color */
+  color: rgb(17, 43, 158); /* Keeping the same color */
   font-size: calc(6px + 1.2vmin); /* Smaller size */
   margin: 0; /* Remove default margin if necessary */
 }
 
 .App-link {
-  color: #ffcc00; /* A bright yellow color for links */
+  color: navy;
   text-decoration: none; /* Remove underline */
   font-weight: bold; /* Make links stand out */
 }
 
 .App-link:hover {
   color: #ffa500; /* Orange on hover */
+}
+
+.App {
+  text-align: left; /* Align text to the left */
+}
+
+.App-header {
+  background-color: rgb(255, 255, 255);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align items to the start (left) */
+  justify-content: flex-start; /* Justify content to the start (top) */
+  padding: 20px; /* Add padding for spacing */
+  font-size: calc(10px + 2vmin);
+  color: rgb(138, 27, 27);
 }
 
 @keyframes App-logo-spin {

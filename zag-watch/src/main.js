@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+
 function MainPage() {
   const [activeTab, setActiveTab] = useState("Map");
   const [formVisible, setFormVisible] = useState(false);
@@ -17,13 +18,14 @@ function MainPage() {
   const [posts, setPosts] = useState([]);
   const [error, setError] = useState("");
 
+
   useEffect(() => {
     const loadGoogleMaps = () => {
       if (window.google && window.google.maps) {
         initMap();
       } else {
         const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places,marker`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAn2L7XjusuIyjQ19kmmpsdlytyKOBvIr0&libraries=places`;
         script.async = true;
         script.defer = true;
         script.onload = initMap;
@@ -31,19 +33,23 @@ function MainPage() {
       }
     };
 
+
     const initMap = () => {
       const { Map, Marker } = window.google.maps;
       const AdvancedMarkerElement = window.google.maps.AdvancedMarkerElement;
+
 
       mapInstance.current = new Map(mapRef.current, {
         center: { lat: 47.6699, lng: -117.404 },
         zoom: 16,
       });
 
+
       mapInstance.current.addListener("click", (e) => {
         addMarker(e.latLng, AdvancedMarkerElement || Marker);
       });
     };
+
 
     const addMarker = (location, MarkerClass) => {
       const markerId = uuidv4();
@@ -53,13 +59,16 @@ function MainPage() {
         title: "Crime Report Marker",
       });
 
+
       marker.set("id", markerId);
       marker.set("data", { title: "", category: "", description: "" });
+
 
       setMarkerData({ title: "", category: "", description: "" });
       setSelectedMarker(marker);
       setIsReadOnly(false);
       setFormVisible(true);
+
 
       marker.addListener("click", () => {
         const markerData = marker.get("data");
@@ -69,12 +78,15 @@ function MainPage() {
         setFormVisible(true);
       });
 
+
       setMarkers((prevMarkers) => [...prevMarkers, marker]);
     };
+
 
     if (activeTab === "Map") {
       loadGoogleMaps();
     }
+
 
     return () => {
       if (mapInstance.current) {
@@ -82,28 +94,34 @@ function MainPage() {
         mapInstance.current = null;
       }
     };
-  }, [activeTab, markers]); // Removed `markers` as dependency to prevent re-initialization
+  }, [activeTab]);
+
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
     setError("");
+
 
     if (isReadOnly) {
       setFormVisible(false);
       return;
     }
 
+
     const { title, description, category } = markerData;
     const finalCategory = category === "" ? "General" : category;
+
 
     let validationError = "";
     if (title.length === 0) validationError += "Title is required\n";
     if (description.length === 0) validationError += "Content is required\n";
 
+
     if (validationError) {
       setError(validationError.trim());
       return;
     }
+
 
     const newPost = {
       id: uuidv4(),
@@ -113,16 +131,20 @@ function MainPage() {
       datePosted: new Date().toISOString(),
     };
 
+
     setPosts((prevPosts) => [...prevPosts, newPost]);
     setMarkerData({ title: "", category: "", description: "" });
+
 
     if (selectedMarker) {
       selectedMarker.set("data", { title, category, description });
     }
 
+
     setFormVisible(false);
     setSelectedMarker(null);
   };
+
 
   const handleCancel = () => {
     if (selectedMarker) {
@@ -135,6 +157,7 @@ function MainPage() {
     setSelectedMarker(null);
   };
 
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setMarkerData((prevData) => ({
@@ -142,6 +165,7 @@ function MainPage() {
       [name]: value,
     }));
   };
+
 
   return (
     <div className="App">
@@ -164,9 +188,11 @@ function MainPage() {
           <button onClick={() => setActiveTab("Resources")}>Resources</button>
         </div>
 
+
         {activeTab === "Map" && (
           <div style={{ height: "75vh", width: "100vw", position: "relative" }}>
             <div ref={mapRef} style={{ height: "100%" }}></div>
+
 
             {formVisible && (
               <div
@@ -241,7 +267,7 @@ function MainPage() {
                 </form>
               </div>
             )}
-            <div className="new-record">
+            <div>
               <h2>Recent Feed Content</h2>
               {posts.map((post) => (
                 <div key={post.id}>
@@ -259,5 +285,6 @@ function MainPage() {
     </div>
   );
 }
+
 
 export default MainPage;

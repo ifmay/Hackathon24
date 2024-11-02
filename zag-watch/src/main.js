@@ -68,7 +68,7 @@ function MainPage() {
         mapInstance.current = null;
       }
     };
-  }, [activeTab]); // Removed `markers` as dependency to prevent re-initialization
+  }, [activeTab, markers]); // Removed `markers` as dependency to prevent re-initialization
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -198,7 +198,7 @@ function MainPage() {
                 </form>
               </div>
             )}
-            <div>
+            <div className="new-record">
               <h2>Recent Feed Content</h2>
               {posts.map((post) => (
                 <div key={post.id}>

@@ -270,13 +270,13 @@ function MainPage() {
               Spokane Crime Reporting Center (CrimeCheck) at 509-456-2233.
             </p>
             <img
-              src="/bulldog2.jpg"
+              src="/bulldog2.png"
               alt="Bulldog"
               style={{
                 position: "absolute",
-                top: "10px",
-                right: "10px",
-                width: "225px",
+                top: "560px",
+                left: "150px",
+                width: "500px",
                 height: "auto",
               }}
             />

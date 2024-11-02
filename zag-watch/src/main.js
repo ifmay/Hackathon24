@@ -252,7 +252,14 @@ function MainPage() {
             </div>
           </div>
         )}
-        {activeTab === "Resources" && <h2>Resources Content</h2>}
+        {activeTab === "Resources" && ( 
+          <div> 
+            <h2>Resources</h2> 
+            <p>To report an urgent situation where law enforcement, fire, or emergency medical services are required, please call 911.
+            </p> <p>To file a report with Gonzaga Campus Security, call the Security Communications Center at 509-313-2222.</p> 
+            <p>To report non-emergency or delayed crimes to SPD, contact the Spokane Crime Reporting Center (CrimeCheck) at 509-456-2233.</p> 
+          </div>
+        )}
       </header>
     </div>
   );

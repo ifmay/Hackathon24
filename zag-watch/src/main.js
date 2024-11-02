@@ -3,17 +3,17 @@ import { v4 as uuidv4 } from "uuid";
 
 function MainPage() {
   const [activeTab, setActiveTab] = useState("Map");
-  const [formVisible, setFormVisible] = useState(false); // Track form visibility
+  const [formVisible, setFormVisible] = useState(false);
   const [markerData, setMarkerData] = useState({
     title: "",
     category: "",
     description: "",
-  }); // Form data
-  const mapRef = useRef(null); // Reference to the map DOM element
-  const mapInstance = useRef(null); // Store the map instance
-  const [markers, setMarkers] = useState([]); // Store an array of markers
+  });
+  const mapRef = useRef(null);
+  const mapInstance = useRef(null);
+  const [markers, setMarkers] = useState([]);
   const [posts, setPosts] = useState([]);
-  let [error, setError] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const loadGoogleMaps = () => {
@@ -48,13 +48,14 @@ function MainPage() {
         map: mapInstance.current,
       });
 
+      setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
+
       setFormVisible(true);
+      setMarkerData({ title: "", category: "", description: "" });
 
       newMarker.addListener("click", () => {
         setFormVisible(true);
       });
-
-      setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
     };
 
     if (activeTab === "Map") {
@@ -67,26 +68,22 @@ function MainPage() {
         mapInstance.current = null;
       }
     };
-  }, [activeTab, markers]); // Add activeTab as a dependency
+  }, [activeTab]); // Removed `markers` as dependency to prevent re-initialization
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    console.log("Marker Data:", markerData);
+    setError("");
 
     const { title, description, category } = markerData;
     const finalCategory = category === "" ? "General" : category;
 
-    if (title.length === 0) {
-      error += "Title is required\n";
-    }
+    let validationError = "";
+    if (title.length === 0) validationError += "Title is required\n";
+    if (description.length === 0) validationError += "Content is required\n";
 
-    if (description.length === 0) {
-      error += "Content is required\n";
-    }
-
-    if (error) {
-      setError(error.trim());
-      return; // exit if there are errors
+    if (validationError) {
+      setError(validationError.trim());
+      return;
     }
 
     const newPost = {
@@ -98,9 +95,7 @@ function MainPage() {
     };
 
     setPosts((prevPosts) => [...prevPosts, newPost]);
-
     setMarkerData({ title: "", category: "", description: "" });
-    setMarkerData({ title: "", description: "" });
     setFormVisible(false);
   };
 
@@ -111,6 +106,7 @@ function MainPage() {
       [name]: value,
     }));
   };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -123,7 +119,7 @@ function MainPage() {
             position: "absolute",
             top: "10px",
             right: "10px",
-            width: "250px",
+            width: "225px",
             height: "auto",
           }}
         />
@@ -140,9 +136,9 @@ function MainPage() {
               <div
                 style={{
                   position: "absolute",
-                  top: "50%", // Center vertically
-                  left: "50%", // Center horizontally
-                  transform: "translate(-50%, -50%)", // Adjust to center exactly
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
                   backgroundColor: "white",
                   padding: "10px",
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
@@ -166,7 +162,6 @@ function MainPage() {
                     Choose a Category:
                     <select
                       name="category"
-                      v
                       value={markerData.category}
                       onChange={handleInputChange}
                       required
@@ -195,6 +190,7 @@ function MainPage() {
                     />
                   </label>
                   <br />
+                  {error && <p style={{ color: "red" }}>{error}</p>}
                   <button type="submit">Save</button>
                   <button type="button" onClick={() => setFormVisible(false)}>
                     Cancel

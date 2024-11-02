@@ -1,15 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { GoogleMap, LoadScript } from "@react-google-maps/api";
-
-const containerStyle = {
-  width: "100%",
-  height: "400px",
-};
-
-const center = {
-  lat: 47.6587,
-  lng: -117.426,
-};
 
 function MainPage() {
   const [activeTab, setActiveTab] = useState("Map");
@@ -18,7 +7,6 @@ function MainPage() {
 
   useEffect(() => {
     const loadGoogleMaps = () => {
-      // Check if the google maps library is already loaded
       if (window.google) {
         initMap();
       } else {
@@ -33,20 +21,24 @@ function MainPage() {
 
     const initMap = async () => {
       const { Map } = await window.google.maps.importLibrary("maps");
-      // Create the map instance and attach it to the mapRef's current DOM element
       mapInstance.current = new Map(mapRef.current, {
         center: { lat: 47.6699, lng: -117.404 }, //spo
         zoom: 16,
       });
     };
 
-    loadGoogleMaps();
+    // Load Google Maps if the active tab is "Map"
+    if (activeTab === "Map") {
+      loadGoogleMaps();
+    }
 
     return () => {
-      // Cleanup logic, if necessary
-      mapInstance.current = null; // Clear the map instance on cleanup
+      // Cleanup logic
+      if (mapInstance.current) {
+        mapInstance.current = null; // Clear the map instance on cleanup
+      }
     };
-  }, []);
+  }, [activeTab]); // Add activeTab as a dependency
 
   return (
     <div className="App">
@@ -54,6 +46,7 @@ function MainPage() {
         <h1>Zag Watch</h1>
         <h2>Be Scare Aware</h2>
         <div>
+          {/*use state to re itit*/}
           <button onClick={() => setActiveTab("Map")}>Map</button>
           <button onClick={() => setActiveTab("Recent Feed")}>
             Recent Feed
@@ -66,10 +59,7 @@ function MainPage() {
 
         {activeTab === "Map" && (
           <div style={{ height: "75vh", width: "100vw" }}>
-            {" "}
-            {/* Full height and width for the map */}
-            <div ref={mapRef} style={{ height: "100%" }}></div>{" "}
-            {/* Map container */}
+            <div ref={mapRef} style={{ height: "100%" }}></div>
           </div>
         )}
         {activeTab === "Recent Feed" && <h2>Recent Feed Content</h2>}

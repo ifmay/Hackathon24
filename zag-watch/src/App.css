@@ -64,3 +64,56 @@
     transform: rotate(360deg);
   }
 }
+
+.new-record {
+  margin: 20px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  /* Light background for the container */
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.new-record h2 {
+  text-align: center;
+  /* Center the title */
+  margin-bottom: 20px;
+  /* Space below the title */
+  color: #333;
+  /* Dark color for the title */
+}
+
+.new-record>div {
+  background-color: white;
+  /* White background for each post */
+  margin: 10px 0;
+  /* Space between posts */
+  padding: 15px;
+  /* Padding inside each post */
+  border-radius: 8px;
+  /* Rounded corners */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  /* Subtle shadow for depth */
+  transition: transform 0.2s, box-shadow 0.2s;
+  /* Smooth transition for hover effect */
+}
+
+.new-record>div:hover {
+  transform: translateY(-2px);
+  /* Lift effect on hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  /* Deeper shadow on hover */
+}
+
+.new-record h3 {
+  margin: 0;
+  color: rgb(138, 27, 27);
+  /* A nice color for post titles */
+}
+
+.new-record p {
+  margin: 5px 0;
+  /* Margin for paragraphs for spacing */
+  color: #555;
+  /* Slightly lighter color for text */
+}

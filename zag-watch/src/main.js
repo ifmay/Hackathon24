@@ -1,13 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 function MainPage() {
   const [activeTab, setActiveTab] = useState("Map");
   const [formVisible, setFormVisible] = useState(false); // Track form visibility
   const [formPosition, setFormPosition] = useState({ lat: null, lng: null }); // Position of the form
-  const [markerData, setMarkerData] = useState({ title: "", description: "" }); // Form data
+  const [markerData, setMarkerData] = useState({
+    title: "",
+    category: "",
+    description: "",
+  }); // Form data
   const mapRef = useRef(null); // Reference to the map DOM element
   const mapInstance = useRef(null); // Store the map instance
   const [markers, setMarkers] = useState([]); // Store an array of markers
+  const [posts, setPosts] = useState([]);
+  let [error, setError] = useState("");
 
   useEffect(() => {
     const loadGoogleMaps = () => {
@@ -70,23 +77,50 @@ function MainPage() {
         mapInstance.current = null; // Clear the map instance on cleanup
       }
     };
-  }, [activeTab]); // Add activeTab as a dependency
+  }, [activeTab, markers]); // Add activeTab as a dependency
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
     // Handle form data submission here (e.g., save marker data)
     console.log("Marker Data:", markerData);
 
-    // Reset form data and hide form after submission
-    setMarkerData({ title: "", description: "" });
+    const { title, description, category } = markerData;
+    const finalCategory = category === "" ? "General" : category;
+
+    if (title.length === 0) {
+      error += "Title is required\n";
+    }
+
+    if (description.length === 0) {
+      error += "Content is required\n";
+    }
+
+    if (error) {
+      setError(error.trim());
+      return; // exit if there are errors
+    }
+
+    const newPost = {
+      id: uuidv4(),
+      category: finalCategory,
+      title,
+      description,
+      datePosted: new Date().toISOString(),
+    };
+
+    setPosts((prevPosts) => [...prevPosts, newPost]);
+
+    setMarkerData({ title: "", category: "", description: "" });
     setFormVisible(false);
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setMarkerData((prevData) => ({ ...prevData, [name]: value }));
+    setMarkerData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
-
   return (
     <div className="App">
       <header className="App-header">
@@ -112,8 +146,8 @@ function MainPage() {
               <div
                 style={{
                   position: "absolute",
-                  top: `${formPosition.lat}px`,
-                  left: `${formPosition.lng}px`,
+                  top: "50%",
+                  left: "50%",
                   backgroundColor: "white",
                   padding: "10px",
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
@@ -128,8 +162,31 @@ function MainPage() {
                       name="title"
                       value={markerData.title}
                       onChange={handleInputChange}
+                      placeholder="Add title..."
                       required
                     />
+                  </label>
+                  <br />
+                  <label>
+                    Choose a Category:
+                    <select
+                      name="category"
+                      v
+                      value={markerData.category}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="">Select a category</option>
+                      <option value="robbery">Robbery</option>
+                      <option value="assault">Assault</option>
+                      <option value="MV-theft">
+                        (Attempted/) Motor Vehicle Theft
+                      </option>
+                      <option value="home-invasion">
+                        (Attempted/) Home Invasion
+                      </option>
+                      <option value="Other">Other</option>
+                    </select>
                   </label>
                   <br />
                   <label>
@@ -138,6 +195,7 @@ function MainPage() {
                       name="description"
                       value={markerData.description}
                       onChange={handleInputChange}
+                      placeholder="Add text..."
                       required
                     />
                   </label>
@@ -151,7 +209,19 @@ function MainPage() {
             )}
           </div>
         )}
-        {activeTab === "Recent Feed" && <h2>Recent Feed Content</h2>}
+        {activeTab === "Recent Feed" && (
+          <div>
+            <h2>Recent Feed Content</h2>
+            {posts.map((post) => (
+              <div key={post.id}>
+                <h3>{post.title}</h3>
+                <p>{post.description}</p>
+                <p>Category: {post.category}</p>
+                <p>Date Posted: {post.datePosted}</p>
+              </div>
+            ))}
+          </div>
+        )}
         {activeTab === "Post a Crime" && <h2>Post a Crime Form</h2>}
         {activeTab === "Resources" && <h2>Resources Content</h2>}
       </header>

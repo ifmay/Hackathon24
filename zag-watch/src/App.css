@@ -21,7 +21,7 @@
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: rgb(4, 15, 50); /* Light color for better contrast */
+  color: rgb(50, 20, 4); /* Light color for better contrast */
 }
 
 .App-header h2 {
@@ -31,7 +31,7 @@
 }
 
 .App-link {
-  color: navy;
+  color: rgb(222, 22, 22);
   text-decoration: none; /* Remove underline */
   font-weight: bold; /* Make links stand out */
 }

@@ -147,7 +147,7 @@ function MainPage() {
     <div className="App">
       <header className="App-header">
         <h1>Zag Watch</h1>
-        <h2>Be Scare Aware</h2>
+        <h2 style={{ fontSize: '1em' }}>Be Scare Aware</h2>
         <img
           src="/bulldog1.jpg"
           alt="Bulldog"
@@ -254,7 +254,7 @@ function MainPage() {
         )}
         {activeTab === "Resources" && ( 
           <div> 
-            <h2>Resources</h2> 
+            <h2 style={{ fontSize: '1em', color: "maroon" }}>Resources!</h2>
             <p>To report an urgent situation where law enforcement, fire, or emergency medical services are required, please call 911.
             </p> <p>To file a report with Gonzaga Campus Security, call the Security Communications Center at 509-313-2222.</p> 
             <p>To report non-emergency or delayed crimes to SPD, contact the Spokane Crime Reporting Center (CrimeCheck) at 509-456-2233.</p> 

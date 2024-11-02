@@ -9,6 +9,8 @@ function MainPage() {
     category: "",
     description: "",
   });
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [isReadOnly, setIsReadOnly] = useState(false);
   const mapRef = useRef(null);
   const mapInstance = useRef(null);
   const [markers, setMarkers] = useState([]);
@@ -21,7 +23,7 @@ function MainPage() {
         initMap();
       } else {
         const script = document.createElement("script");
-        script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAn2L7XjusuIyjQ19kmmpsdlytyKOBvIr0&libraries=places`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places,marker`;
         script.async = true;
         script.defer = true;
         script.onload = initMap;
@@ -29,8 +31,9 @@ function MainPage() {
       }
     };
 
-    const initMap = async () => {
-      const { Map } = await window.google.maps.importLibrary("maps");
+    const initMap = () => {
+      const { Map, Marker } = window.google.maps;
+      const AdvancedMarkerElement = window.google.maps.AdvancedMarkerElement;
 
       mapInstance.current = new Map(mapRef.current, {
         center: { lat: 47.6699, lng: -117.404 },
@@ -38,24 +41,35 @@ function MainPage() {
       });
 
       mapInstance.current.addListener("click", (e) => {
-        addMarker(e.latLng);
+        addMarker(e.latLng, AdvancedMarkerElement || Marker);
       });
     };
 
-    const addMarker = (location) => {
-      const newMarker = new window.google.maps.Marker({
+    const addMarker = (location, MarkerClass) => {
+      const markerId = uuidv4();
+      const marker = new MarkerClass({
         position: location,
         map: mapInstance.current,
+        title: "Crime Report Marker",
       });
 
-      setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
+      marker.set("id", markerId);
+      marker.set("data", { title: "", category: "", description: "" });
 
-      setFormVisible(true);
       setMarkerData({ title: "", category: "", description: "" });
+      setSelectedMarker(marker);
+      setIsReadOnly(false);
+      setFormVisible(true);
 
-      newMarker.addListener("click", () => {
+      marker.addListener("click", () => {
+        const markerData = marker.get("data");
+        setMarkerData(markerData);
+        setSelectedMarker(marker);
+        setIsReadOnly(markerData.title !== "" || markerData.description !== "");
         setFormVisible(true);
       });
+
+      setMarkers((prevMarkers) => [...prevMarkers, marker]);
     };
 
     if (activeTab === "Map") {
@@ -68,11 +82,16 @@ function MainPage() {
         mapInstance.current = null;
       }
     };
-  }, [activeTab]); // Removed `markers` as dependency to prevent re-initialization
+  }, [activeTab]);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
     setError("");
+
+    if (isReadOnly) {
+      setFormVisible(false);
+      return;
+    }
 
     const { title, description, category } = markerData;
     const finalCategory = category === "" ? "General" : category;
@@ -96,7 +115,24 @@ function MainPage() {
 
     setPosts((prevPosts) => [...prevPosts, newPost]);
     setMarkerData({ title: "", category: "", description: "" });
+
+    if (selectedMarker) {
+      selectedMarker.set("data", { title, category, description });
+    }
+
     setFormVisible(false);
+    setSelectedMarker(null);
+  };
+
+  const handleCancel = () => {
+    if (selectedMarker) {
+      selectedMarker.setMap(null); // Remove marker from the map
+      setMarkers((prevMarkers) =>
+        prevMarkers.filter((marker) => marker !== selectedMarker)
+      );
+    }
+    setFormVisible(false);
+    setSelectedMarker(null);
   };
 
   const handleInputChange = (e) => {
@@ -155,6 +191,7 @@ function MainPage() {
                       onChange={handleInputChange}
                       placeholder="Add title..."
                       required
+                      readOnly={isReadOnly}
                     />
                   </label>
                   <br />
@@ -165,6 +202,7 @@ function MainPage() {
                       value={markerData.category}
                       onChange={handleInputChange}
                       required
+                      disabled={isReadOnly}
                     >
                       <option value="">Select a category</option>
                       <option value="robbery">Robbery</option>
@@ -187,14 +225,19 @@ function MainPage() {
                       onChange={handleInputChange}
                       placeholder="Add text..."
                       required
+                      readOnly={isReadOnly}
                     />
                   </label>
                   <br />
                   {error && <p style={{ color: "red" }}>{error}</p>}
-                  <button type="submit">Save</button>
-                  <button type="button" onClick={() => setFormVisible(false)}>
-                    Cancel
+                  <button type="submit">
+                    {isReadOnly ? "Close" : "Save"}
                   </button>
+                  {!isReadOnly && (
+                    <button type="button" onClick={handleCancel}>
+                      Cancel
+                    </button>
+                  )}
                 </form>
               </div>
             )}

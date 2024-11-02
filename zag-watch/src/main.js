@@ -4,10 +4,11 @@ function MainPage() {
   const [activeTab, setActiveTab] = useState("Map");
   const mapRef = useRef(null); // Reference to the map DOM element
   const mapInstance = useRef(null); // Store the map instance
+  const [markers, setMarkers] = useState([]); // Store an array of markers
 
   useEffect(() => {
     const loadGoogleMaps = () => {
-      if (window.google) {
+      if (window.google && window.google.maps) {
         initMap();
       } else {
         const script = document.createElement("script");
@@ -21,10 +22,26 @@ function MainPage() {
 
     const initMap = async () => {
       const { Map } = await window.google.maps.importLibrary("maps");
+
       mapInstance.current = new Map(mapRef.current, {
-        center: { lat: 47.6699, lng: -117.404 }, //spo
+        center: { lat: 47.6699, lng: -117.404 }, // Spokane coordinates
         zoom: 16,
       });
+
+      // Add click listener to place a marker on click
+      mapInstance.current.addListener("click", (e) => {
+        addMarker(e.latLng);
+      });
+    };
+
+    const addMarker = (location) => {
+      const newMarker = new window.google.maps.Marker({
+        position: location,
+        map: mapInstance.current,
+      });
+
+      // Update the markers state to include the new marker
+      setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
     };
 
     // Load Google Maps if the active tab is "Map"
@@ -35,6 +52,8 @@ function MainPage() {
     return () => {
       // Cleanup logic
       if (mapInstance.current) {
+        // Remove all markers from the map
+        markers.forEach((marker) => marker.setMap(null));
         mapInstance.current = null; // Clear the map instance on cleanup
       }
     };
@@ -46,7 +65,6 @@ function MainPage() {
         <h1>Zag Watch</h1>
         <h2>Be Scare Aware</h2>
         <div>
-          {/*use state to re itit*/}
           <button onClick={() => setActiveTab("Map")}>Map</button>
           <button onClick={() => setActiveTab("Recent Feed")}>
             Recent Feed

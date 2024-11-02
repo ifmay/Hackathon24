@@ -259,13 +259,13 @@ function MainPage() {
             </p> <p>To file a report with Gonzaga Campus Security, call the Security Communications Center at 509-313-2222.</p> 
             <p>To report non-emergency or delayed crimes to SPD, contact the Spokane Crime Reporting Center (CrimeCheck) at 509-456-2233.</p> 
             <img
-              src="/bulldog2.jpg"
+              src="/bulldog2.png"
               alt="Bulldog"
               style={{
                 position: "absolute",
-                top: "10px",
-                right: "10px",
-                width: "225px",
+                top: "560px",
+                left: "150px",
+                width: "500px",
                 height: "auto",
               }}
             />

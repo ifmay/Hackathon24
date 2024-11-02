@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+/** change how date appears, enter date incident occurred, filter based on date posted */
+
 function MainPage() {
   const [activeTab, setActiveTab] = useState("Map");
   const [formVisible, setFormVisible] = useState(false);
@@ -82,7 +84,7 @@ function MainPage() {
         mapInstance.current = null;
       }
     };
-  }, [activeTab]);
+  }, [activeTab, markers]);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -252,12 +254,21 @@ function MainPage() {
             </div>
           </div>
         )}
-        {activeTab === "Resources" && ( 
-          <div> 
-            <h2>Resources</h2> 
-            <p>To report an urgent situation where law enforcement, fire, or emergency medical services are required, please call 911.
-            </p> <p>To file a report with Gonzaga Campus Security, call the Security Communications Center at 509-313-2222.</p> 
-            <p>To report non-emergency or delayed crimes to SPD, contact the Spokane Crime Reporting Center (CrimeCheck) at 509-456-2233.</p> 
+        {activeTab === "Resources" && (
+          <div>
+            <h2>Resources</h2>
+            <p>
+              To report an urgent situation where law enforcement, fire, or
+              emergency medical services are required, please call 911.
+            </p>{" "}
+            <p>
+              To file a report with Gonzaga Campus Security, call the Security
+              Communications Center at 509-313-2222.
+            </p>
+            <p>
+              To report non-emergency or delayed crimes to SPD, contact the
+              Spokane Crime Reporting Center (CrimeCheck) at 509-456-2233.
+            </p>
           </div>
         )}
       </header>

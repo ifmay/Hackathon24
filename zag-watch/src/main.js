@@ -3,11 +3,17 @@ import { v4 as uuidv4 } from "uuid";
 
 function MainPage() {
   const [activeTab, setActiveTab] = useState("Map");
-  const [formVisible, setFormVisible] = useState(false);
-  const [markerData, setMarkerData] = useState({ title: "", description: "" });
-  const mapRef = useRef(null);
-  const mapInstance = useRef(null);
-  const [markers, setMarkers] = useState([]);
+  const [formVisible, setFormVisible] = useState(false); // Track form visibility
+  const [markerData, setMarkerData] = useState({
+    title: "",
+    category: "",
+    description: "",
+  }); // Form data
+  const mapRef = useRef(null); // Reference to the map DOM element
+  const mapInstance = useRef(null); // Store the map instance
+  const [markers, setMarkers] = useState([]); // Store an array of markers
+  const [posts, setPosts] = useState([]);
+  let [error, setError] = useState("");
 
   useEffect(() => {
     const loadGoogleMaps = () => {
@@ -62,7 +68,6 @@ function MainPage() {
       }
     };
   }, [activeTab, markers]); // Add activeTab as a dependency
-  }, [activeTab]);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -135,7 +140,7 @@ function MainPage() {
               <div
                 style={{
                   position: "absolute",
-                  top: "50%",  // Center vertically
+                  top: "50%", // Center vertically
                   left: "50%", // Center horizontally
                   transform: "translate(-50%, -50%)", // Adjust to center exactly
                   backgroundColor: "white",
@@ -197,22 +202,19 @@ function MainPage() {
                 </form>
               </div>
             )}
+            <div>
+              <h2>Recent Feed Content</h2>
+              {posts.map((post) => (
+                <div key={post.id}>
+                  <h3>{post.title}</h3>
+                  <p>{post.description}</p>
+                  <p>Category: {post.category}</p>
+                  <p>Date Posted: {post.datePosted}</p>
+                </div>
+              ))}
+            </div>
           </div>
         )}
-        {activeTab === "Recent Feed" && (
-          <div>
-            <h2>Recent Feed Content</h2>
-            {posts.map((post) => (
-              <div key={post.id}>
-                <h3>{post.title}</h3>
-                <p>{post.description}</p>
-                <p>Category: {post.category}</p>
-                <p>Date Posted: {post.datePosted}</p>
-              </div>
-            ))}
-          </div>
-        )}
-        {activeTab === "Post a Crime" && <h2>Post a Crime Form</h2>}
         {activeTab === "Resources" && <h2>Resources Content</h2>}
       </header>
     </div>
